@@ -1,0 +1,23 @@
+@import url('line-awesome/dist/line-awesome/css/line-awesome.min.css');
+
+@media all and (max-width: 500px) {
+    .list-view.editing .toolbar,
+    .list-view.editing .contact-grid {
+        display: none;
+    }
+}
+
+a[highlight] {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/*!* Change the background color to black *!*/
+/*:root {*/
+/*    --lumo-base-color: #000;*/
+/*}*/
+
+/*!* Change text color to white *!*/
+/*:root {*/
+/*    --lumo-body-text-color: #fff;*/
+/*}*/
