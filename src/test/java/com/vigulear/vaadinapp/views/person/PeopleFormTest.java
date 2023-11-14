@@ -1,13 +1,9 @@
 package com.vigulear.vaadinapp.views.person;
 
 import com.vigulear.vaadinapp.data.entity.Person;
-import com.vigulear.vaadinapp.data.entity.SkillDomain;
-import com.vigulear.vaadinapp.data.entity.SkillLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
