@@ -7,6 +7,7 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -27,6 +28,7 @@ public class PersonForm extends FormLayout {
   TextField firstName = new TextField("First name");
   TextField lastName = new TextField("Last name");
   EmailField email = new EmailField("Email");
+  TextField totalCost = new TextField("Total cost");
   Button skills = new Button("Skills");
 
   Button save = new Button("Save");
@@ -37,8 +39,9 @@ public class PersonForm extends FormLayout {
   public PersonForm() {
     addClassName("contact-form");
     binder.bindInstanceFields(this);
+    totalCost.setReadOnly(true);
 
-    add(firstName, lastName, email, skills, createButtonsLayout());
+    add(firstName, lastName, email, totalCost, skills, createButtonsLayout());
   }
 
   public void setPerson(Person person) {
@@ -75,7 +78,7 @@ public class PersonForm extends FormLayout {
       binder.writeBean(person);
       fireEvent(new SaveEvent(this, person));
     } catch (ValidationException exception) {
-      exception.printStackTrace();
+      Notification.show(exception.getMessage(), 1500, Notification.Position.MIDDLE);
     }
   }
 

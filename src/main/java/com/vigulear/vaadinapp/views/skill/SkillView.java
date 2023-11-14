@@ -3,7 +3,6 @@ package com.vigulear.vaadinapp.views.skill;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -13,10 +12,12 @@ import com.vaadin.flow.router.*;
 import com.vigulear.vaadinapp.data.entity.Skill;
 import com.vigulear.vaadinapp.data.service.PersonSkillService;
 import com.vigulear.vaadinapp.views.MainLayout;
+import jakarta.annotation.security.PermitAll;
 
 /**
  * @author Constantin Vigulear
  */
+@PermitAll
 @PageTitle("Skills | Vaadin App")
 @Route(value = "skills", layout = MainLayout.class)
 public class SkillView extends VerticalLayout implements HasUrlParameter<String> {
@@ -48,6 +49,7 @@ public class SkillView extends VerticalLayout implements HasUrlParameter<String>
         .setHeader("Level")
         .setComparator(getLevelComparator());
     skillGrid.getColumns().forEach(column -> column.setAutoWidth(true));
+    skillGrid.addColumn(Skill::getSkillPrice).setHeader("Price").setSortable(true);
 
     skillGrid.asSingleSelect().addValueChangeListener(event -> editSkill(event.getValue()));
   }

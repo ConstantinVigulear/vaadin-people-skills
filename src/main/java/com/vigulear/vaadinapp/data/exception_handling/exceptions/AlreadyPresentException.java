@@ -1,4 +1,4 @@
-package com.vigulear.vaadinapp.data.aspect.exception_handling.exceptions;
+package com.vigulear.vaadinapp.data.exception_handling.exceptions;
 
 /**
  * @author Constantin Vigulear

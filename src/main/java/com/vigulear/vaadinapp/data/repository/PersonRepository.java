@@ -18,9 +18,9 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             "or lower(c.lastName) like lower(concat('%', :searchTerm, '%'))")
     List<Person> search(@Param("searchTerm") String searchTerm);
 
-    @Query("SELECT p FROM Person p LEFT JOIN FETCH p.skills WHERE p.id = :peronId")
-
-    Optional<Person> findPersonWithSkillsById(Long peronId);
+    @Query("SELECT p FROM Person p LEFT JOIN FETCH p.skills WHERE p.id = :personId")
+    Optional<Person> findPersonWithSkillsById(Long personId);
 
     Person findPersonByFirstNameAndLastNameAndEmail(String firstName, String lastName, String email);
+
 }

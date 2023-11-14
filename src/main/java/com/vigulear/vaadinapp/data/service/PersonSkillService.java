@@ -5,17 +5,14 @@ import com.vigulear.vaadinapp.data.entity.SkillLevel;
 import com.vigulear.vaadinapp.data.entity.Person;
 import com.vigulear.vaadinapp.data.entity.Skill;
 import com.vigulear.vaadinapp.data.entity.SkillDomain;
+import com.vigulear.vaadinapp.data.exception_handling.exceptions.AlreadyPresentException;
 import com.vigulear.vaadinapp.data.repository.PersonRepository;
 import com.vigulear.vaadinapp.data.repository.DomainRepository;
 import com.vigulear.vaadinapp.data.repository.LevelRepository;
 import com.vigulear.vaadinapp.data.repository.SkillRepository;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.ignoreCase;
 
 /**
  * @author Constantin Vigulear
@@ -26,14 +23,6 @@ public class PersonSkillService {
   private final SkillRepository skillRepository;
   private final LevelRepository levelRepository;
   private final DomainRepository domainRepository;
-
-  private final ExampleMatcher skillMatcher =
-      ExampleMatcher.matching()
-          .withIgnorePaths("id")
-          .withIgnorePaths("version")
-          .withMatcher("name", ignoreCase())
-          .withMatcher("skillDomain", ignoreCase())
-          .withMatcher("skillLevel", ignoreCase());
 
   public PersonSkillService(
       PersonRepository personRepository,
@@ -63,25 +52,35 @@ public class PersonSkillService {
       System.err.println("Person is null");
       return;
     }
-
     personRepository.save(person);
     Notification.show("Saved", 3000, Notification.Position.MIDDLE);
   }
 
   public List<Skill> findAllSkills(String stringFilter) {
+    List<Skill> result;
     if (stringFilter == null || stringFilter.isEmpty()) {
-      return skillRepository.findAll();
+      result = skillRepository.findAll();
     } else {
-      return skillRepository.search(stringFilter);
+      result = skillRepository.search(stringFilter);
     }
+    result.forEach(skill -> skill.setSkillPrice(skill.calculateSkillPrice()));
+    return result;
   }
 
   public Person findPersonWithSkillsById(Long personId) {
-    return personRepository.findPersonWithSkillsById(personId).orElse(null);
+    Person result = personRepository.findPersonWithSkillsById(personId).orElse(null);
+    assert result != null;
+    result.getSkills().forEach(skill -> skill.setSkillPrice(skill.calculateSkillPrice()));
+    result.setTotalCost(result.calculateTotalCost());
+    return result;
   }
 
-  public Skill findSkillsWithPeopleById(Long skillId) {
-    return skillRepository.findSkillsWithPeopleById(skillId).orElse(null);
+  public Skill findSkillWithPeopleById(Long skillId) {
+    Skill result = skillRepository.findSkillWithPeopleById(skillId).orElse(null);
+    assert result != null;
+    result.setSkillPrice(result.calculateSkillPrice());
+
+    return result;
   }
 
   public void deleteSkill(Skill skill) {
@@ -91,8 +90,7 @@ public class PersonSkillService {
 
   public void saveSkill(Skill skill) {
     if (skill == null) {
-      System.err.println("Skill is null");
-      return;
+      throw new NullPointerException("SKill is null");
     }
 
     Skill skillToDelete =
@@ -100,7 +98,7 @@ public class PersonSkillService {
             skill.getName(), skill.getDomain(), skill.getLevel());
 
     if (skillToDelete != null) {
-      Notification.show("This skill already exists!", 1500, Notification.Position.TOP_CENTER);
+      throw new AlreadyPresentException("This skill already exists!");
     } else {
       skillRepository.save(skill);
       Notification.show("Saved", 1500, Notification.Position.MIDDLE);
@@ -137,7 +135,7 @@ public class PersonSkillService {
   }
 
   public void addPersonToSkill(Person newPerson, Long skillId) {
-    Skill skill = this.findSkillsWithPeopleById(skillId);
+    Skill skill = this.findSkillWithPeopleById(skillId);
     Person person =
         personRepository.findPersonByFirstNameAndLastNameAndEmail(
             newPerson.getFirstName(), newPerson.getLastName(), newPerson.getEmail());
@@ -169,7 +167,7 @@ public class PersonSkillService {
   }
 
   public void removePersonFromSkill(Long skillId, Long personId) {
-    Skill skill = this.findSkillsWithPeopleById(skillId);
+    Skill skill = this.findSkillWithPeopleById(skillId);
     Person person = personRepository.findById(personId).orElse(null);
 
     if (person != null && skill != null) {
@@ -177,11 +175,5 @@ public class PersonSkillService {
       skillRepository.save(skill);
       Notification.show("Removed", 1500, Notification.Position.MIDDLE);
     }
-  }
-
-  public boolean checkExists(Skill skill) {
-    Example<Skill> example = Example.of(skill, skillMatcher);
-
-    return skillRepository.exists(example);
   }
 }

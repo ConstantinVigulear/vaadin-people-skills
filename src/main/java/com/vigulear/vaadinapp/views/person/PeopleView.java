@@ -1,9 +1,9 @@
 package com.vigulear.vaadinapp.views.person;
 
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -12,10 +12,16 @@ import com.vaadin.flow.router.*;
 import com.vigulear.vaadinapp.data.entity.Person;
 import com.vigulear.vaadinapp.data.service.PersonSkillService;
 import com.vigulear.vaadinapp.views.MainLayout;
+import jakarta.annotation.security.PermitAll;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Constantin Vigulear
  */
+
+@PermitAll
+@org.springframework.stereotype.Component
+@Scope("prototype")
 @PageTitle("People | Vaadin App")
 @Route(value = "people", layout = MainLayout.class)
 public class PeopleView extends VerticalLayout implements HasUrlParameter<String> {
@@ -93,7 +99,7 @@ public class PeopleView extends VerticalLayout implements HasUrlParameter<String
     if (person == null) {
       closeEditor();
     } else {
-      personForm.setPerson(person);
+      personForm.setPerson(service.findPersonWithSkillsById(person.getId()));
       personForm.prepareSkillsButton();
       personForm.setVisible(true);
       personForm.skills.setVisible(person.getId() != null);
@@ -135,7 +141,7 @@ public class PeopleView extends VerticalLayout implements HasUrlParameter<String
     if (skillId == 0) {
       personGrid.setItems(service.findAllPeople(filterText.getValue()));
     } else {
-      personGrid.setItems(service.findSkillsWithPeopleById(skillId).getPersons());
+      personGrid.setItems(service.findSkillWithPeopleById(skillId).getPersons());
     }
   }
 

@@ -30,8 +30,7 @@ public class Person extends AbstractEntity {
   @JsonIgnoreProperties({"people"})
   private Set<Skill> skills = new HashSet<>();
 
-  //  @Formula("skills.stream().mapToInt(Skill::getSkillPrice).sum()")
-  //  private Integer totalCost;
+  @Transient private Double totalCost = 0.0;
 
   public String getFirstName() {
     return firstName;
@@ -65,11 +64,15 @@ public class Person extends AbstractEntity {
     return skills;
   }
 
-  //  public void setTotalCost(Integer totalCost) {
-  //    this.totalCost = totalCost;
-  //  }
-  //
-  //  public Integer getTotalCost() {
-  //    return totalCost;
-  //  }
+  public void setTotalCost(Double totalCost) {
+    this.totalCost = totalCost;
+  }
+
+  public Double getTotalCost() {
+    return totalCost;
+  }
+
+  public Double calculateTotalCost() {
+    return getSkills().stream().mapToDouble(Skill::getSkillPrice).sum();
+  }
 }

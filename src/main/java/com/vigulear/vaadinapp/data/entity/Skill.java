@@ -7,31 +7,24 @@ import jakarta.validation.constraints.NotNull;
 import java.util.*;
 
 @Entity
-public class Skill extends AbstractEntity{
+public class Skill extends AbstractEntity {
 
-  @NotEmpty
-  private String name;
+  @NotEmpty private String name;
 
-@NotNull
-@ManyToOne
-  private SkillDomain skillDomain;
+  @NotNull @ManyToOne private SkillDomain skillDomain;
 
-  @NotNull
-  @ManyToOne
-  private SkillLevel skillLevel;
+  @NotNull @ManyToOne private SkillLevel skillLevel;
 
   @ManyToMany(
       fetch = FetchType.LAZY,
       cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
   @JoinTable(
-          name = "PEOPLE_SKILLS",
-          joinColumns = @JoinColumn(name = "SKILL_ID"),
-          inverseJoinColumns = @JoinColumn(name = "PERSON_ID"))
+      name = "PEOPLE_SKILLS",
+      joinColumns = @JoinColumn(name = "SKILL_ID"),
+      inverseJoinColumns = @JoinColumn(name = "PERSON_ID"))
   private Set<Person> persons = new HashSet<>();
 
-//  @NotEmpty
-//  @Formula("(int) (this.getDomain().getBasePrice() * (1 + (double) level.getLevelValue() / 10))")
-//  private int skillPrice;
+  @Transient private Double skillPrice = 0.0;
 
   public String getName() {
     return name;
@@ -65,11 +58,21 @@ public class Skill extends AbstractEntity{
     this.persons = persons;
   }
 
-//  public Integer getSkillPrice() {
-//    return skillPrice;
-//  }
-//
-//  public void setSkillPrice(Integer skillPrice) {
-//    this.skillPrice = skillPrice;
-//  }
+  public Double getSkillPrice() {
+    return skillPrice;
+  }
+
+  public void setSkillPrice(Double skillPrice) {
+    this.skillPrice = skillPrice;
+  }
+
+  public Double calculateSkillPrice() {
+    if (skillLevel.getName().equals("None")) {
+      return 0.0;
+    }
+    double price =
+        Double.parseDouble(skillDomain.getBasePrice().toString())
+            * (1 + Double.parseDouble(skillLevel.getLevelValue().toString()) / 5);
+    return Math.ceil(price);
+  }
 }

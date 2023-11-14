@@ -1,6 +1,5 @@
 package com.vigulear.vaadinapp.data.repository;
 
-import com.vigulear.vaadinapp.data.entity.Person;
 import com.vigulear.vaadinapp.data.entity.Skill;
 import com.vigulear.vaadinapp.data.entity.SkillDomain;
 import com.vigulear.vaadinapp.data.entity.SkillLevel;
@@ -21,5 +20,5 @@ public interface SkillRepository extends JpaRepository<Skill, Long> {
   Skill findSkillByNameAndSkillDomainAndSkillLevel(String name, SkillDomain domain, SkillLevel level);
 
   @Query("SELECT s FROM Skill s LEFT JOIN FETCH s.persons WHERE s.id = :skillId")
-  Optional<Skill> findSkillsWithPeopleById(Long skillId);
+  Optional<Skill> findSkillWithPeopleById(Long skillId);
 }

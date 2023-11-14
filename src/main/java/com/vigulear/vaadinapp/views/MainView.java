@@ -1,20 +1,19 @@
 package com.vigulear.vaadinapp.views;
 
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.theme.lumo.Lumo;
+import com.vaadin.flow.server.VaadinSession;
+import com.vigulear.vaadinapp.data.exception_handling.CustomErrorHandler;
+import jakarta.annotation.security.PermitAll;
 
 /**
  * @author Constantin Vigulear
  */
+@PermitAll
 @Route(value = "", layout = MainLayout.class) // map view to the root
 class MainView extends VerticalLayout {
 
   MainView() {
-
+    VaadinSession.getCurrent().setErrorHandler(new CustomErrorHandler());
   }
 }
