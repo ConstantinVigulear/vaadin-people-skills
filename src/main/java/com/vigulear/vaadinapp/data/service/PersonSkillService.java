@@ -6,6 +6,7 @@ import com.vigulear.vaadinapp.data.entity.Person;
 import com.vigulear.vaadinapp.data.entity.Skill;
 import com.vigulear.vaadinapp.data.entity.SkillDomain;
 import com.vigulear.vaadinapp.data.exception_handling.exceptions.AlreadyPresentException;
+import com.vigulear.vaadinapp.data.exception_handling.exceptions.NotFoundException;
 import com.vigulear.vaadinapp.data.repository.PersonRepository;
 import com.vigulear.vaadinapp.data.repository.DomainRepository;
 import com.vigulear.vaadinapp.data.repository.LevelRepository;
@@ -49,8 +50,7 @@ public class PersonSkillService {
 
   public void savePerson(Person person) {
     if (person == null) {
-      System.err.println("Person is null");
-      return;
+      throw new NotFoundException("Person is null");
     }
     personRepository.save(person);
     Notification.show("Saved", 3000, Notification.Position.MIDDLE);
@@ -90,7 +90,7 @@ public class PersonSkillService {
 
   public void saveSkill(Skill skill) {
     if (skill == null) {
-      throw new NullPointerException("SKill is null");
+      throw new NotFoundException("SKill is null");
     }
 
     Skill skillToDelete =

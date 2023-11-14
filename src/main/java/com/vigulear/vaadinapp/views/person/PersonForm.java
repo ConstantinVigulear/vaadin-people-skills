@@ -23,6 +23,7 @@ import com.vigulear.vaadinapp.views.skill.SkillView;
 /**
  * @author Constantin Vigulear
  */
+@SuppressWarnings("UnusedReturnValue")
 public class PersonForm extends FormLayout {
   Binder<Person> binder = new BeanValidationBinder<>(Person.class);
   TextField firstName = new TextField("First name");

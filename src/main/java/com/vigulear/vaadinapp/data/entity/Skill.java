@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 @Entity
 public class Skill extends AbstractEntity {
 
